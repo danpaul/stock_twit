@@ -7,5 +7,12 @@
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "Dan Breczinski <pt2323@gmail.com> (http://dpb.me/)",
-  "license": "ISC"
+  "license": "ISC",
+  "dependencies": {
+    "csv": "^0.4.2",
+    "knex": "^0.7.6",
+    "mysql": "^2.6.2",
+    "twitter_stream_base": "git://github.com/danpaul/twitter_stream_base",
+    "underscore": "^1.8.3"
+  }
 }
