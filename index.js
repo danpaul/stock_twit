@@ -12,6 +12,11 @@ var twitterStreamBase = new TwitterStreamBase(twitterConfig, knex);
 var KEY_SYMBOL = 0,
     KEY_NAME = 1;
 
+var tweetProccessorCheckRunning = false;
+// var TWEET_PROCESSOR_CHECK_TIME = 1000 * 60;
+// asdf
+var TWEET_PROCESSOR_CHECK_TIME = 1000 * 10;
+
 function getCompanyList(callback){
     fs.readFile('./data/companylist.csv', 'utf8', function(err, csvData){
         if( err ){
@@ -25,40 +30,41 @@ function getCompanyList(callback){
             }
             // remove header row
             data.splice(0, 1);
-            var companyList = _.map(data, function(d){
-                return({
-                    symbol: d[KEY_SYMBOL],
-                    name: d[KEY_NAME]
-                })
+            var symbolList = [];
+            var companyList = _.each(data, function(d){
+                symbolList.push(d[KEY_SYMBOL]);
             })
-            callback(null, companyList);
+            callback(null, symbolList);
         })
     });
 }
 
-// function stringContainsComma(stringIn){
-//     return !( stringIn.indexOf(',') === -1 )
-// }
-
-function escapeCommas(stringIn){
-    return stringIn.split(',').join('\\,');
+function startTracking(){
+    getCompanyList(function(err, companyList){
+        if( err ){
+            console.log(err);
+            return;
+        }
+        twitterStreamBase.track(companyList);
+        console.log('Monitoring initialized.');
+    })
 }
 
-getCompanyList(function(err, companyList){
-    if( err ){
-        console.log(err);
-        return;
+function processTweets(){
+    if( !tweetProccessorCheckRunning ){
+        tweetProccessorCheckRunning = true;
+        twitterStreamBase.processTweets(function(err){
+            if( err ){ console.log(err); }
+            tweetProccessorCheckRunning = false;
+        })
     }
+}
 
-    var trackingString = '';
-    _.each(companyList, function(company){
-        trackingString += escapeCommas(company.symbol) + ', ';
-        // trackingString += escapeCommas(company.name) + ', ';
-    })
-// console.log(trackingString);
-    twitterStreamBase.track(trackingString);
-// console.log(trackingString);
-
-    console.log('Monitoring initialized.');
-
-})
+if( process.env.NODE_TASK === 'watch' ){
+    startTracking();    
+} else if( process.env.NODE_TASK === 'process' ) {
+    console.log('Process watching start.');
+    setInterval(processTweets, TWEET_PROCESSOR_CHECK_TIME);
+} else {
+    throw('NODE_TASK flag must be set.');
+}

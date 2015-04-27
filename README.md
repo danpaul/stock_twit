@@ -5,6 +5,9 @@ This is a personal project to grab tweets related to companies traded on the NYS
 
 ## To Run
 ```
-NODE_ENV=production node index.js
-NODE_ENV=development nodemon index.js
+NODE_ENV=production NODE_TASK=watch node index.js
+NODE_ENV=production NODE_TASK=process node index.js
+
+NODE_ENV=development NODE_TASK=watch nodemon index.js
+NODE_ENV=development NODE_TASK=process nodemon index.js
 ```
