@@ -13,8 +13,6 @@ var KEY_SYMBOL = 0,
     KEY_NAME = 1;
 
 var tweetProccessorCheckRunning = false;
-// var TWEET_PROCESSOR_CHECK_TIME = 1000 * 60;
-// asdf
 var TWEET_PROCESSOR_CHECK_TIME = 1000 * 10;
 
 function getCompanyList(callback){

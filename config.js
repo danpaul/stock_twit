@@ -17,10 +17,10 @@ if( config.environment === 'development' ){
     config.db = {
         client: 'mysql',
         connection: {
-            host: '',
-            user: '',
+            host: '127.0.0.1',
+            user: 'root',
             password: '',
-            database: '',
+            database: 'twitter_stream_base',
             port:  8889
         }
     }
